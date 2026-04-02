@@ -29,44 +29,22 @@
     </div>
 
     <script>
-        const urlInput = document.getElementById('urlInput');
-        const preview = document.getElementById('preview');
-        const thumbnail = document.getElementById('thumbnail');
-        const convertBtn = document.getElementById('convertBtn');
+convertBtn.addEventListener('click', () => {
+    const url = urlInput.value;
+    if(!url) return alert('請先貼上網址喔！');
+    
+    convertBtn.innerText = "正在聯絡廚房轉檔中...";
+    convertBtn.classList.add('animate-pulse');
 
-        // 當使用者輸入網址時，自動抓縮圖
-        urlInput.addEventListener('input', (e) => {
-            const url = e.target.value;
-            const videoId = extractId(url);
-            if(videoId) {
-                thumbnail.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-                preview.classList.remove('hidden');
-            } else {
-                preview.classList.add('hidden');
-            }
-        });
+    // https://my-yt-backend-3.onrender.com
+    const backendUrl = "https://my-yt-backend-3.onrender.com";
 
-        // 點擊按鈕的反應
-        convertBtn.addEventListener('click', () => {
-            const url = urlInput.value;
-            if(!url) return alert('請先貼上網址喔！');
-            
-            convertBtn.innerText = "轉換中...";
-            convertBtn.classList.add('animate-pulse');
+    // 直接讓瀏覽器跳轉到下載網址，會自動觸發 MP3 下載
+    window.location.href = `${backendUrl}/download?url=${encodeURIComponent(url)}`;
 
-            // 這裡未來會接你的後端 API
-            setTimeout(() => {
-                alert('這是一個介面示範。真正下載需要串接後端伺服器喔！');
-                convertBtn.innerText = "開始轉換並下載";
-                convertBtn.classList.remove('animate-pulse');
-            }, 2000);
-        });
-
-        function extractId(url) {
-            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[7].length === 11) ? match[7] : false;
-        }
-    </script>
-</body>
-</html>
+    // 幾秒後讓按鈕恢復原狀
+    setTimeout(() => {
+        convertBtn.innerText = "開始轉換並下載";
+        convertBtn.classList.remove('animate-pulse');
+    }, 5000);
+});
