@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube 轉 MP3 下載器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-800 p-8 rounded-3xl shadow-2xl">
+        <h1 class="text-3xl font-bold text-center mb-2">YT 轉 MP3</h1>
+        <p class="text-zinc-400 text-center mb-8 text-sm">輸入網址，立即轉換最高音質</p>
+
+        <input type="text" id="urlInput" placeholder="請貼上 YouTube 網址..." 
+            class="w-full bg-black border border-zinc-700 rounded-xl py-4 px-4 mb-4 focus:outline-none focus:border-red-500 transition-all">
+
+        <div id="preview" class="hidden mb-6">
+            <img id="thumbnail" src="" class="w-full rounded-xl border border-zinc-800">
+        </div>
+
+        <button id="convertBtn" class="w-full bg-red-600 hover:bg-red-500 py-4 rounded-xl font-bold text-lg transition-all active:scale-95">
+            開始轉換並下載
+        </button>
+
+        <p class="text-[10px] text-zinc-600 mt-6 text-center">
+            本工具僅供學術練習使用，請尊重版權。
+        </p>
+    </div>
+
+    <script>
+        const urlInput = document.getElementById('urlInput');
+        const preview = document.getElementById('preview');
+        const thumbnail = document.getElementById('thumbnail');
+        const convertBtn = document.getElementById('convertBtn');
+
+        // 當使用者輸入網址時，自動抓縮圖
+        urlInput.addEventListener('input', (e) => {
+            const url = e.target.value;
+            const videoId = extractId(url);
+            if(videoId) {
+                thumbnail.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+                preview.classList.remove('hidden');
+            } else {
+                preview.classList.add('hidden');
+            }
+        });
+
+        // 點擊按鈕的反應
+        convertBtn.addEventListener('click', () => {
+            const url = urlInput.value;
+            if(!url) return alert('請先貼上網址喔！');
+            
+            convertBtn.innerText = "轉換中...";
+            convertBtn.classList.add('animate-pulse');
+
+            // 這裡未來會接你的後端 API
+            setTimeout(() => {
+                alert('這是一個介面示範。真正下載需要串接後端伺服器喔！');
+                convertBtn.innerText = "開始轉換並下載";
+                convertBtn.classList.remove('animate-pulse');
+            }, 2000);
+        });
+
+        function extractId(url) {
+            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[7].length === 11) ? match[7] : false;
+        }
+    </script>
+</body>
+</html>
