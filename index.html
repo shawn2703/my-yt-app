@@ -29,22 +29,47 @@
     </div>
 
     <script>
-convertBtn.addEventListener('click', () => {
-    const url = urlInput.value;
-    if(!url) return alert('請先貼上網址喔！');
-    
-    convertBtn.innerText = "正在聯絡廚房轉檔中...";
-    convertBtn.classList.add('animate-pulse');
+        // 【修正 1】先定義變數，讓電腦認得這些元素
+        const urlInput = document.getElementById('urlInput');
+        const convertBtn = document.getElementById('convertBtn');
+        const preview = document.getElementById('preview');
+        const thumbnail = document.getElementById('thumbnail');
 
-    // https://my-yt-backend-3.onrender.com
-    const backendUrl = "https://my-yt-backend-3.onrender.com";
+        // 自動抓取縮圖的功能（讓 App 看起來更專業）
+        urlInput.addEventListener('input', (e) => {
+            const url = e.target.value;
+            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            const match = url.match(regExp);
+            const videoId = (match && match[7].length === 11) ? match[7] : false;
 
-    // 直接讓瀏覽器跳轉到下載網址，會自動觸發 MP3 下載
-    window.location.href = `${backendUrl}/download?url=${encodeURIComponent(url)}`;
+            if(videoId) {
+                thumbnail.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+                preview.classList.remove('hidden');
+            } else {
+                preview.classList.add('hidden');
+            }
+        });
 
-    // 幾秒後讓按鈕恢復原狀
-    setTimeout(() => {
-        convertBtn.innerText = "開始轉換並下載";
-        convertBtn.classList.remove('animate-pulse');
-    }, 5000);
-});
+        // 按鈕點擊邏輯
+        convertBtn.addEventListener('click', () => {
+            const url = urlInput.value;
+            if(!url) return alert('請先貼上網址喔！');
+            
+            convertBtn.innerText = "正在聯絡廚房轉檔中...";
+            convertBtn.classList.add('animate-pulse');
+
+            // 你的 Render 後端網址
+            const backendUrl = "https://my-yt-backend-3.onrender.com";
+
+            // 執行跳轉下載
+            window.location.href = `${backendUrl}/download?url=${encodeURIComponent(url)}`;
+
+            // 5 秒後恢復按鈕狀態
+            setTimeout(() => {
+                convertBtn.innerText = "開始轉換並下載";
+                convertBtn.classList.remove('animate-pulse');
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
